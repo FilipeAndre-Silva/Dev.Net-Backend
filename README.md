@@ -1,5 +1,5 @@
 # Desenvolvedor .Net Backend
-Repositório criado para compartilhar os fundamentos que adquiri ao longo da minha carreira como Desenvolvedor .Net Backend.
+Repositório criado para compartilhar conhecimentos que adquiri ao longo da minha carreira como Desenvolvedor .Net Backend.
 
 ## OO(Orientação a Objetos)
 Paradigma de programação que organiza o software em "objetos", que são instâncias de "classes". Cada objeto contém dados (chamados de atributos ou propriedades) e comportamentos (chamados de métodos ou funções). A Orientação a Objetos facilita o desenvolvimento de software modular, reutilizável e escalável, e é amplamente utilizada em linguagens como C#, Java, Python e C++.
