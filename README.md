@@ -1177,7 +1177,1069 @@ public class CarrinhoDeCompras
     }
 }
 ```
+# Padrões de Projetos
 
-Aplicar os princípios de Clean Code não só melhora a legibilidade e a manutenção do código, mas também facilita a colaboração em equipe e a escalabilidade do sistema. Se precisar de mais detalhes ou tiver dúvidas adicionais sobre qualquer um desses princípios, sinta-se à vontade para perguntar!
+Padrões de projeto (design patterns) são soluções comprovadas para problemas comuns em design de software. Vou cobrir alguns dos padrões de projeto mais usados no contexto de e-commerce com exemplos em C#.
+
+### 1. **Padrão Singleton**
+
+**Descrição:** Garante que uma classe tenha apenas uma instância e fornece um ponto de acesso global a essa instância.
+
+**Exemplo:**
+
+```csharp
+public class Configuracao
+{
+    private static Configuracao instancia;
+    private static readonly object lockObject = new object();
+
+    public string ConnectionString { get; set; }
+
+    private Configuracao() 
+    {
+        // Inicialização
+    }
+
+    public static Configuracao Instancia
+    {
+        get
+        {
+            if (instancia == null)
+            {
+                lock (lockObject)
+                {
+                    if (instancia == null)
+                    {
+                        instancia = new Configuracao();
+                    }
+                }
+            }
+            return instancia;
+        }
+    }
+}
+```
+
+### 2. **Padrão Factory Method**
+
+**Descrição:** Define uma interface para criar um objeto, mas deixa as subclasses decidirem qual classe instanciar.
+
+**Exemplo:**
+
+```csharp
+// Produto
+public abstract class Pagamento
+{
+    public abstract void ProcessarPagamento();
+}
+
+// Concrete Products
+public class PagamentoCartao : Pagamento
+{
+    public override void ProcessarPagamento()
+    {
+        // Processar pagamento com cartão
+    }
+}
+
+public class PagamentoBoleto : Pagamento
+{
+    public override void ProcessarPagamento()
+    {
+        // Processar pagamento com boleto
+    }
+}
+
+// Creator
+public abstract class PagamentoFactory
+{
+    public abstract Pagamento CriarPagamento();
+}
+
+// Concrete Creator
+public class PagamentoCartaoFactory : PagamentoFactory
+{
+    public override Pagamento CriarPagamento()
+    {
+        return new PagamentoCartao();
+    }
+}
+
+public class PagamentoBoletoFactory : PagamentoFactory
+{
+    public override Pagamento CriarPagamento()
+    {
+        return new PagamentoBoleto();
+    }
+}
+
+// Client
+public class Pedido
+{
+    private readonly Pagamento pagamento;
+
+    public Pedido(PagamentoFactory pagamentoFactory)
+    {
+        pagamento = pagamentoFactory.CriarPagamento();
+    }
+
+    public void Finalizar()
+    {
+        pagamento.ProcessarPagamento();
+    }
+}
+```
+
+### 3. **Padrão Abstract Factory**
+
+**Descrição:** Fornece uma interface para criar famílias de objetos relacionados sem especificar suas classes concretas.
+
+**Exemplo:**
+
+```csharp
+// Produtos
+public interface IProduto
+{
+    string Nome { get; }
+}
+
+public class ProdutoEletronico : IProduto
+{
+    public string Nome => "Eletrônico";
+}
+
+public class ProdutoVestuario : IProduto
+{
+    public string Nome => "Vestuário";
+}
+
+// Factory Interfaces
+public interface IFactory
+{
+    IProduto CriarProduto();
+}
+
+// Concrete Factories
+public class EletronicoFactory : IFactory
+{
+    public IProduto CriarProduto()
+    {
+        return new ProdutoEletronico();
+    }
+}
+
+public class VestuarioFactory : IFactory
+{
+    public IProduto CriarProduto()
+    {
+        return new ProdutoVestuario();
+    }
+}
+
+// Client
+public class Loja
+{
+    private readonly IProduto produto;
+
+    public Loja(IFactory factory)
+    {
+        produto = factory.CriarProduto();
+    }
+
+    public void ExibirProduto()
+    {
+        Console.WriteLine($"Produto: {produto.Nome}");
+    }
+}
+```
+
+### 4. **Padrão Builder**
+
+**Descrição:** Separa a construção de um objeto complexo de sua representação para que o mesmo processo de construção possa criar diferentes representações.
+
+**Exemplo:**
+
+```csharp
+// Produto
+public class Pedido
+{
+    public string Cliente { get; set; }
+    public string Endereco { get; set; }
+    public List<string> Produtos { get; set; } = new List<string>();
+}
+
+// Builder
+public class PedidoBuilder
+{
+    private readonly Pedido pedido = new Pedido();
+
+    public PedidoBuilder DefinirCliente(string cliente)
+    {
+        pedido.Cliente = cliente;
+        return this;
+    }
+
+    public PedidoBuilder DefinirEndereco(string endereco)
+    {
+        pedido.Endereco = endereco;
+        return this;
+    }
+
+    public PedidoBuilder AdicionarProduto(string produto)
+    {
+        pedido.Produtos.Add(produto);
+        return this;
+    }
+
+    public Pedido Build()
+    {
+        return pedido;
+    }
+}
+
+// Client
+public class Loja
+{
+    public void CriarPedido()
+    {
+        Pedido pedido = new PedidoBuilder()
+            .DefinirCliente("João")
+            .DefinirEndereco("Rua A, 123")
+            .AdicionarProduto("Produto 1")
+            .AdicionarProduto("Produto 2")
+            .Build();
+    }
+}
+```
+
+### 5. **Padrão Prototype**
+
+**Descrição:** Permite criar novos objetos copiando um protótipo existente.
+
+**Exemplo:**
+
+```csharp
+// Prototype
+public abstract class ProdutoPrototype
+{
+    public abstract ProdutoPrototype Clone();
+}
+
+// Concrete Prototype
+public class Produto : ProdutoPrototype
+{
+    public string Nome { get; set; }
+    public decimal Preco { get; set; }
+
+    public override ProdutoPrototype Clone()
+    {
+        return (Produto)this.MemberwiseClone();
+    }
+}
+
+// Client
+public class Loja
+{
+    public void CriarProduto()
+    {
+        Produto produtoOriginal = new Produto { Nome = "Produto A", Preco = 100.00m };
+        Produto produtoCopia = (Produto)produtoOriginal.Clone();
+
+        produtoCopia.Nome = "Produto B";
+        produtoCopia.Preco = 150.00m;
+
+        Console.WriteLine($"Original: {produtoOriginal.Nome}, {produtoOriginal.Preco}");
+        Console.WriteLine($"Cópia: {produtoCopia.Nome}, {produtoCopia.Preco}");
+    }
+}
+```
+
+### 6. **Padrão Adapter**
+
+**Descrição:** Permite que a interface de uma classe seja usada como outra interface esperada.
+
+**Exemplo:**
+
+```csharp
+// Target
+public interface IPagamento
+{
+    void Processar();
+}
+
+// Adaptee
+public class PagamentoStripe
+{
+    public void RealizarPagamento()
+    {
+        // Implementação do pagamento com Stripe
+    }
+}
+
+// Adapter
+public class PagamentoAdapter : IPagamento
+{
+    private readonly PagamentoStripe pagamentoStripe;
+
+    public PagamentoAdapter(PagamentoStripe pagamentoStripe)
+    {
+        this.pagamentoStripe = pagamentoStripe;
+    }
+
+    public void Processar()
+    {
+        pagamentoStripe.RealizarPagamento();
+    }
+}
+
+// Client
+public class Pedido
+{
+    private readonly IPagamento pagamento;
+
+    public Pedido(IPagamento pagamento)
+    {
+        this.pagamento = pagamento;
+    }
+
+    public void Finalizar()
+    {
+        pagamento.Processar();
+    }
+}
+```
+
+### 7. **Padrão Proxy**
+
+**Descrição:** Fornece um substituto ou representante para outro objeto para controlar o acesso a ele.
+
+**Exemplo:**
+
+```csharp
+// Subject
+public interface IImagem
+{
+    void Exibir();
+}
+
+// Real Subject
+public class ImagemReal : IImagem
+{
+    private readonly string arquivo;
+
+    public ImagemReal(string arquivo)
+    {
+        this.arquivo = arquivo;
+        CarregarImagem();
+    }
+
+    private void CarregarImagem()
+    {
+        // Simula o carregamento da imagem
+        Console.WriteLine($"Carregando imagem {arquivo}");
+    }
+
+    public void Exibir()
+    {
+        Console.WriteLine($"Exibindo imagem {arquivo}");
+    }
+}
+
+// Proxy
+public class ImagemProxy : IImagem
+{
+    private readonly string arquivo;
+    private ImagemReal imagemReal;
+
+    public ImagemProxy(string arquivo)
+    {
+        this.arquivo = arquivo;
+    }
+
+    public void Exibir()
+    {
+        if (imagemReal == null)
+        {
+            imagemReal = new ImagemReal(arquivo);
+        }
+        imagemReal.Exibir();
+    }
+}
+
+// Client
+public class Galeria
+{
+    public void MostrarImagens()
+    {
+        IImagem imagem1 = new ImagemProxy("imagem1.jpg");
+        IImagem imagem2 = new ImagemProxy("imagem2.jpg");
+
+        imagem1.Exibir();
+        imagem2.Exibir();
+    }
+}
+```
+
+### 8. **Padrão Strategy**
+
+**Descrição:** Define uma família de algoritmos, encapsula cada um e torna-os intercambiáveis.
+
+**Exemplo:**
+
+```csharp
+// Strategy
+public interface IDesconto
+{
+    decimal AplicarDesconto(decimal preco);
+}
+
+// Concrete Strategies
+public class DescontoPercentual : IDesconto
+{
+    private readonly decimal percentual;
+
+    public DescontoPercentual(decimal percentual)
+    {
+        this.percentual = percentual;
+    }
+
+    public decimal AplicarDesconto(decimal preco)
+    {
+        return preco - (preco * percentual / 100);
+    }
+}
+
+public class DescontoFixo : IDesconto
+{
+    private readonly decimal valor;
+
+    public DescontoFixo(decimal valor)
+    {
+        this.valor = valor;
+    }
+
+    public decimal AplicarDesconto(decimal preco)
+    {
+        return preco - valor;
+    }
+}
+
+// Context
+public class CarrinhoDeCompras
+{
+    private readonly IDesconto desconto;
+
+    public CarrinhoDeCompras(IDesconto desconto)
+    {
+        this.desconto = desconto;
+    }
+
+    public decimal CalcularPrecoFinal(decimal precoOriginal)
+    {
+        return desconto.AplicarDesconto(precoOriginal);
+    }
+}
+
+// Client
+public class Loja
+{
+    public void CalcularTotal()
+    {
+        var desconto = new DescontoPercentual(10); // 10% de desconto
+        var carrinho = new CarrinhoDeCompras(desconto);
 
 
+        decimal precoFinal = carrinho.CalcularPrecoFinal(100); // Preço original de 100
+        Console.WriteLine($"Preço final: {precoFinal}");
+    }
+}
+```
+
+### 9. **Padrão Decorator**
+
+**Descrição:** Adiciona responsabilidades adicionais a um objeto dinamicamente.
+
+**Exemplo:**
+
+```csharp
+// Component
+public interface IProduto
+{
+    decimal Preco { get; }
+}
+
+// Concrete Component
+public class ProdutoBase : IProduto
+{
+    public decimal Preco => 100.00m; // Preço base do produto
+}
+
+// Decorator
+public abstract class ProdutoDecorator : IProduto
+{
+    protected readonly IProduto produto;
+
+    protected ProdutoDecorator(IProduto produto)
+    {
+        this.produto = produto;
+    }
+
+    public abstract decimal Preco { get; }
+}
+
+// Concrete Decorators
+public class DescontoDecorator : ProdutoDecorator
+{
+    private readonly decimal desconto;
+
+    public DescontoDecorator(IProduto produto, decimal desconto) : base(produto)
+    {
+        this.desconto = desconto;
+    }
+
+    public override decimal Preco => produto.Preco - desconto;
+}
+
+public class ImpostoDecorator : ProdutoDecorator
+{
+    private readonly decimal taxaImposto;
+
+    public ImpostoDecorator(IProduto produto, decimal taxaImposto) : base(produto)
+    {
+        this.taxaImposto = taxaImposto;
+    }
+
+    public override decimal Preco => produto.Preco + (produto.Preco * taxaImposto / 100);
+}
+
+// Client
+public class Loja
+{
+    public void MostrarPreco()
+    {
+        IProduto produto = new ProdutoBase();
+        produto = new DescontoDecorator(produto, 20); // 20 de desconto
+        produto = new ImpostoDecorator(produto, 15); // 15% de imposto
+
+        Console.WriteLine($"Preço final: {produto.Preco}");
+    }
+}
+```
+
+### 10. **Padrão Command**
+
+**Descrição:** Encapsula uma solicitação como um objeto, permitindo parametrizar clientes com diferentes solicitações.
+
+**Exemplo:**
+
+```csharp
+// Command
+public interface IComando
+{
+    void Executar();
+}
+
+// Concrete Commands
+public class AdicionarProdutoComando : IComando
+{
+    private readonly Estoque estoque;
+    private readonly string produto;
+
+    public AdicionarProdutoComando(Estoque estoque, string produto)
+    {
+        this.estoque = estoque;
+        this.produto = produto;
+    }
+
+    public void Executar()
+    {
+        estoque.AdicionarProduto(produto);
+    }
+}
+
+public class RemoverProdutoComando : IComando
+{
+    private readonly Estoque estoque;
+    private readonly string produto;
+
+    public RemoverProdutoComando(Estoque estoque, string produto)
+    {
+        this.estoque = estoque;
+        this.produto = produto;
+    }
+
+    public void Executar()
+    {
+        estoque.RemoverProduto(produto);
+    }
+}
+
+// Receiver
+public class Estoque
+{
+    public void AdicionarProduto(string produto)
+    {
+        Console.WriteLine($"Produto {produto} adicionado ao estoque.");
+    }
+
+    public void RemoverProduto(string produto)
+    {
+        Console.WriteLine($"Produto {produto} removido do estoque.");
+    }
+}
+
+// Invoker
+public class ControladorEstoque
+{
+    private readonly List<IComando> comandos = new List<IComando>();
+
+    public void AdicionarComando(IComando comando)
+    {
+        comandos.Add(comando);
+    }
+
+    public void ExecutarComandos()
+    {
+        foreach (var comando in comandos)
+        {
+            comando.Executar();
+        }
+    }
+}
+
+// Client
+public class Loja
+{
+    public void GerenciarEstoque()
+    {
+        var estoque = new Estoque();
+        var controlador = new ControladorEstoque();
+
+        controlador.AdicionarComando(new AdicionarProdutoComando(estoque, "Produto A"));
+        controlador.AdicionarComando(new RemoverProdutoComando(estoque, "Produto B"));
+
+        controlador.ExecutarComandos();
+    }
+}
+```
+
+### 11. **Padrão Template Method**
+
+**Descrição:** Define o esqueleto de um algoritmo na superclasse, permitindo que subclasses substituam etapas específicas do algoritmo sem mudar sua estrutura.
+
+**Exemplo:**
+
+```csharp
+// Abstract Class
+public abstract class ProcessadorDePedido
+{
+    public void ProcessarPedido()
+    {
+        ValidarPedido();
+        AplicarDesconto();
+        RealizarPagamento();
+        EnviarConfirmacao();
+    }
+
+    protected abstract void ValidarPedido();
+    protected abstract void AplicarDesconto();
+    protected abstract void RealizarPagamento();
+    protected abstract void EnviarConfirmacao();
+}
+
+// Concrete Class
+public class ProcessadorDePedidoNormal : ProcessadorDePedido
+{
+    protected override void ValidarPedido()
+    {
+        Console.WriteLine("Validando pedido normal.");
+    }
+
+    protected override void AplicarDesconto()
+    {
+        Console.WriteLine("Aplicando desconto normal.");
+    }
+
+    protected override void RealizarPagamento()
+    {
+        Console.WriteLine("Realizando pagamento normal.");
+    }
+
+    protected override void EnviarConfirmacao()
+    {
+        Console.WriteLine("Enviando confirmação normal.");
+    }
+}
+
+// Client
+public class Loja
+{
+    public void ProcessarPedido()
+    {
+        ProcessadorDePedido processador = new ProcessadorDePedidoNormal();
+        processador.ProcessarPedido();
+    }
+}
+```
+
+### 12. **Padrão Observer**
+
+**Descrição:** Define uma dependência um-para-muitos entre objetos para que quando um objeto muda de estado, todos os seus dependentes sejam notificados e atualizados automaticamente.
+
+**Exemplo:**
+
+```csharp
+// Subject
+public class Pedido
+{
+    private readonly List<IObservador> observadores = new List<IObservador>();
+
+    public void AdicionarObservador(IObservador observador)
+    {
+        observadores.Add(observador);
+    }
+
+    public void RemoverObservador(IObservador observador)
+    {
+        observadores.Remove(observador);
+    }
+
+    public void NotificarObservadores()
+    {
+        foreach (var observador in observadores)
+        {
+            observador.Atualizar();
+        }
+    }
+
+    public void FinalizarPedido()
+    {
+        // Lógica para finalizar o pedido
+        NotificarObservadores();
+    }
+}
+
+// Observer
+public interface IObservador
+{
+    void Atualizar();
+}
+
+// Concrete Observer
+public class NotificadorDeEmail : IObservador
+{
+    public void Atualizar()
+    {
+        Console.WriteLine("Enviando notificação por e-mail.");
+    }
+}
+
+public class NotificadorDeSMS : IObservador
+{
+    public void Atualizar()
+    {
+        Console.WriteLine("Enviando notificação por SMS.");
+    }
+}
+
+// Client
+public class Loja
+{
+    public void ProcessarPedido()
+    {
+        Pedido pedido = new Pedido();
+        pedido.AdicionarObservador(new NotificadorDeEmail());
+        pedido.AdicionarObservador(new NotificadorDeSMS());
+
+        pedido.FinalizarPedido();
+    }
+}
+```
+
+### 13. **Padrão Chain of Responsibility**
+
+**Descrição:** Permite que um objeto passe uma solicitação ao próximo objeto na cadeia de objetos. 
+
+**Exemplo:**
+
+```csharp
+// Handler
+public abstract class ProcessadorDeRequisicao
+{
+    protected ProcessadorDeRequisicao Proximo { get; set; }
+
+    public void SetProximo(ProcessadorDeRequisicao proximo)
+    {
+        Proximo = proximo;
+    }
+
+    public abstract void Processar(string requisicao);
+}
+
+// Concrete Handlers
+public class ProcessadorDeAutenticacao : ProcessadorDeRequisicao
+{
+    public override void Processar(string requisicao)
+    {
+        if (requisicao.Contains("autenticar"))
+        {
+            Console.WriteLine("Autenticando...");
+        }
+        else if (Proximo != null)
+        {
+            Proximo.Processar(requisicao);
+        }
+    }
+}
+
+public class ProcessadorDeAutorizacao : ProcessadorDeRequisicao
+{
+    public override void Processar(string requisicao)
+    {
+        if (requisicao.Contains("autorizar"))
+        {
+            Console.WriteLine("Autorizando...");
+        }
+        else if (Proximo != null)
+        {
+            Proximo.Processar(requisicao);
+        }
+    }
+}
+
+// Client
+public class Loja
+{
+    public void ProcessarRequisicao()
+    {
+        var autenticacao = new ProcessadorDeAutenticacao();
+        var autorizacao = new ProcessadorDeAutorizacao();
+
+        autenticacao.SetProximo(autorizacao);
+
+        autenticacao.Processar("autorizar");
+    }
+}
+```
+
+### 14. **Padrão Mediator**
+
+**Descrição:** Define um objeto que encapsula como um conjunto de objetos interage. 
+
+**Exemplo:**
+
+```csharp
+// Mediator
+public class MediadorDeChat
+{
+    private List<Participante> participantes = new List<Participante>();
+
+    public void AdicionarParticipante(Participante participante)
+    {
+        participantes.Add(participante);
+        participante.SetMediator(this);
+    }
+
+    public void EnviarMensagem(string mensagem, Participante remetente)
+    {
+        foreach (var participante in participantes)
+        {
+            if (participante != remetente)
+            {
+                participante.ReceberMensagem(mensagem);
+            }
+        }
+    }
+}
+
+// Colleague
+public abstract class Participante
+{
+    protected MediadorDeChat mediador;
+
+    public void SetMediator(MediadorDeChat mediador)
+    {
+        this.mediador = mediador;
+    }
+
+    public abstract void ReceberMensagem(string mensagem);
+    public abstract void EnviarMensagem(string mensagem);
+}
+
+// Concrete Colleagues
+public class Usuario : Participante
+{
+    private readonly string nome;
+
+    public Usuario(string nome)
+    {
+        this.nome = nome;
+    }
+
+
+
+    public override void EnviarMensagem(string mensagem)
+    {
+        Console.WriteLine($"{nome} enviou: {mensagem}");
+        mediador.EnviarMensagem(mensagem, this);
+    }
+
+    public override void ReceberMensagem(string mensagem)
+    {
+        Console.WriteLine($"{nome} recebeu: {mensagem}");
+    }
+}
+
+// Client
+public class Chat
+{
+    public void Iniciar()
+    {
+        var mediador = new MediadorDeChat();
+
+        var usuario1 = new Usuario("João");
+        var usuario2 = new Usuario("Maria");
+
+        mediador.AdicionarParticipante(usuario1);
+        mediador.AdicionarParticipante(usuario2);
+
+        usuario1.EnviarMensagem("Olá Maria!");
+    }
+}
+```
+
+### 15. **Padrão Flyweight**
+
+**Descrição:** Usa compartilhamento para suportar grandes quantidades de objetos com granularidade fina.
+
+**Exemplo:**
+
+```csharp
+// Flyweight
+public interface IProduto
+{
+    void ExibirDetalhes();
+}
+
+// Concrete Flyweight
+public class Produto : IProduto
+{
+    private readonly string nome;
+
+    public Produto(string nome)
+    {
+        this.nome = nome;
+    }
+
+    public void ExibirDetalhes()
+    {
+        Console.WriteLine($"Produto: {nome}");
+    }
+}
+
+// Flyweight Factory
+public class FabricaDeProdutos
+{
+    private readonly Dictionary<string, IProduto> produtos = new Dictionary<string, IProduto>();
+
+    public IProduto GetProduto(string nome)
+    {
+        if (!produtos.ContainsKey(nome))
+        {
+            produtos[nome] = new Produto(nome);
+        }
+        return produtos[nome];
+    }
+}
+
+// Client
+public class Loja
+{
+    public void ExibirProdutos()
+    {
+        var fabrica = new FabricaDeProdutos();
+
+        var produto1 = fabrica.GetProduto("Produto A");
+        var produto2 = fabrica.GetProduto("Produto A"); // Mesmo nome, mesmo objeto
+
+        produto1.ExibirDetalhes();
+        produto2.ExibirDetalhes();
+    }
+}
+```
+
+### 16. **Padrão State**
+
+**Descrição:** Permite que um objeto altere seu comportamento quando seu estado interno muda.
+
+**Exemplo:**
+
+```csharp
+// State
+public interface IEstado
+{
+    void Processar(Pedido pedido);
+}
+
+// Concrete States
+public class EstadoEmAprovacao : IEstado
+{
+    public void Processar(Pedido pedido)
+    {
+        Console.WriteLine("Pedido está em aprovação.");
+        pedido.SetEstado(new EstadoAprovado());
+    }
+}
+
+public class EstadoAprovado : IEstado
+{
+    public void Processar(Pedido pedido)
+    {
+        Console.WriteLine("Pedido aprovado.");
+        pedido.SetEstado(new EstadoEnviado());
+    }
+}
+
+public class EstadoEnviado : IEstado
+{
+    public void Processar(Pedido pedido)
+    {
+        Console.WriteLine("Pedido enviado.");
+    }
+}
+
+// Context
+public class Pedido
+{
+    private IEstado estado;
+
+    public Pedido()
+    {
+        estado = new EstadoEmAprovacao(); // Estado inicial
+    }
+
+    public void SetEstado(IEstado estado)
+    {
+        this.estado = estado;
+    }
+
+    public void Processar()
+    {
+        estado.Processar(this);
+    }
+}
+
+// Client
+public class Loja
+{
+    public void GerenciarPedido()
+    {
+        var pedido = new Pedido();
+        pedido.Processar();
+        pedido.Processar();
+        pedido.Processar();
+    }
+}
+```
+
+Estes são exemplos comuns de padrões de projeto aplicados ao contexto de e-commerce. Cada padrão resolve um problema específico e pode ser muito útil para criar sistemas mais flexíveis e fáceis de manter. Se você precisar de mais detalhes sobre algum padrão ou de exemplos adicionais, estou à disposição!
