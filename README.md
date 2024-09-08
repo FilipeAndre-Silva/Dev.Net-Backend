@@ -2245,3 +2245,48 @@ public class Loja
 ```
 
 Estes são exemplos comuns de padrões de projeto aplicados ao contexto de e-commerce. Cada padrão resolve um problema específico e pode ser muito útil para criar sistemas mais flexíveis e fáceis de manter. Se você precisar de mais detalhes sobre algum padrão ou de exemplos adicionais, estou à disposição!
+
+# Padrões Arquiteturais
+No desenvolvimento de backend, vários padrões arquiteturais são utilizados para resolver diferentes desafios e otimizar a construção e manutenção de sistemas complexos. Aqui está uma lista de alguns padrões arquiteturais comuns, o que eles resolvem e quando devemos usá-los:
+
+### 1. **MVC (Model-View-Controller)**
+   - **O que resolve**: Separa a lógica de negócios, a interface do usuário e o controle das interações do usuário para melhorar a organização e a manutenção do código.
+   - **Quando usar**: Ideal para aplicações web onde você deseja separar claramente a lógica de apresentação (View), a lógica de negócios (Model) e a lógica de controle (Controller).
+
+### 2. **Microservices**
+   - **O que resolve**: Permite dividir uma aplicação em serviços pequenos e independentes, que podem ser desenvolvidos, implantados e escalados separadamente.
+   - **Quando usar**: Quando você precisa de alta escalabilidade, flexibilidade e autonomia entre diferentes partes do sistema. É útil para sistemas complexos e grandes equipes de desenvolvimento.
+
+### 3. **Monolithic**
+   - **O que resolve**: Concentra toda a lógica e funcionalidade em uma única aplicação. Pode simplificar o desenvolvimento e a implantação.
+   - **Quando usar**: Para aplicações menores ou menos complexas onde a separação de serviços não é necessária. É mais fácil de começar e pode ser mais fácil de gerenciar inicialmente.
+
+### 4. **Event-Driven Architecture (EDA)**
+   - **O que resolve**: Facilita a construção de sistemas que reagem a eventos e mensagens, promovendo a desacoplamento entre diferentes partes do sistema.
+   - **Quando usar**: Quando você precisa construir sistemas altamente escaláveis e responsivos que reagem a eventos em tempo real, como em sistemas de processamento de dados, notificações, e comunicação em tempo real.
+
+### 5. **Serverless**
+   - **O que resolve**: Permite a execução de código sem a necessidade de gerenciar servidores, reduzindo a sobrecarga operacional e permitindo um modelo de pagamento por uso.
+   - **Quando usar**: Para funções ou serviços que têm picos de demanda imprevisíveis ou para aplicações onde a gestão de infraestrutura é um problema. É ideal para tarefas discretas e eventos específicos.
+
+### 6. **CQRS (Command Query Responsibility Segregation)**
+   - **O que resolve**: Separa operações de leitura e escrita em sistemas, permitindo otimizações e escalabilidade específicas para cada tipo de operação.
+   - **Quando usar**: Quando você precisa de alta performance e escalabilidade em sistemas que têm um grande volume de leitura e escrita, e onde as consultas e comandos podem ser otimizados separadamente.
+
+### 7. **Repository Pattern**
+   - **O que resolve**: Fornece uma camada de abstração entre a lógica de negócios e a camada de acesso a dados, promovendo um design mais limpo e facilitando a manutenção.
+   - **Quando usar**: Quando você deseja desacoplar a lógica de acesso a dados da lógica de negócios e facilitar testes e manutenções.
+
+### 8. **Layered Architecture**
+   - **O que resolve**: Organiza a aplicação em camadas distintas (por exemplo, apresentação, lógica de negócios, acesso a dados) para promover a modularidade e facilitar a manutenção.
+   - **Quando usar**: Quando você deseja uma separação clara de responsabilidades e um design organizado que permite fácil manutenção e evolução.
+
+### 9. **Domain-Driven Design (DDD)**
+   - **O que resolve**: Foca na criação de modelos de domínio que refletem a complexidade do negócio, promovendo uma melhor compreensão e comunicação entre desenvolvedores e especialistas do domínio.
+   - **Quando usar**: Em projetos complexos onde a modelagem do domínio é crucial e o entendimento do negócio é essencial para o design da aplicação.
+
+### 10. **Service-Oriented Architecture (SOA)**
+   - **O que resolve**: Permite que diferentes serviços se comuniquem entre si através de interfaces padronizadas, promovendo a reutilização e a integração de serviços.
+   - **Quando usar**: Em grandes organizações ou sistemas onde há necessidade de integração entre diversos serviços e sistemas, e onde a reutilização de serviços é uma prioridade.
+
+Esses padrões arquiteturais podem ser usados sozinhos ou em combinação, dependendo das necessidades específicas do projeto, do tamanho da equipe e dos requisitos de escalabilidade e manutenção. A escolha do padrão certo pode impactar significativamente a eficiência do desenvolvimento e a qualidade do produto final.
