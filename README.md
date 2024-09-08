@@ -455,7 +455,9 @@ Esses conceitos e técnicas ajudam a modelar e implementar diferentes aspectos d
 
 Esses exemplos cobrem uma ampla gama de técnicas e conceitos OO aplicados em um sistema de e-commerce, e são fundamentais para criar um sistema robusto e bem estruturado. Se precisar de mais detalhes ou exemplos específicos, estou à disposição para ajudar!
 
-Claro! Vamos explorar os princípios SOLID com exemplos em C# no contexto de e-commerce. SOLID é um acrônimo para cinco princípios de design de software que ajudam a criar sistemas mais compreensíveis, flexíveis e manuteníveis. Esses princípios são:
+# SOLID
+
+SOLID é um acrônimo para cinco princípios de design de software que ajudam a criar sistemas mais compreensíveis, flexíveis e manuteníveis. Esses princípios são:
 
 1. **S - Single Responsibility Principle (SRP)**
 2. **O - Open/Closed Principle (OCP)**
