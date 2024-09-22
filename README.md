@@ -682,8 +682,6 @@ Os princípios SOLID ajudam a construir sistemas mais flexíveis e manuteníveis
 - **ISP (Interface Segregation Principle):** Interfaces pequenas e específicas, como em `IPagamentoComCartao` e `IPagamentoComBoleto`.
 - **DIP (Dependency Inversion Principle):** Dependência de abstrações, como em `INotificacao` e `Pedido`.
 
-Se precisar de mais detalhes sobre algum dos princípios ou tiver dúvidas adicionais, sinta-se à vontade para perguntar!
-
 # Clean Code
 É um conceito desenvolvido por Robert C. Martin (também conhecido como Uncle Bob), que promove a escrita de código legível, manutenível e de alta qualidade. No contexto de e-commerce, aplicar princípios de Clean Code ajuda a criar um sistema robusto e fácil de entender.
 
@@ -2197,7 +2195,7 @@ public class Loja
 }
 ```
 
-Estes são exemplos comuns de padrões de projeto aplicados ao contexto de e-commerce. Cada padrão resolve um problema específico e pode ser muito útil para criar sistemas mais flexíveis e fáceis de manter. Se você precisar de mais detalhes sobre algum padrão ou de exemplos adicionais, estou à disposição!
+Estes são exemplos comuns de padrões de projeto aplicados ao contexto de e-commerce. Cada padrão resolve um problema específico e pode ser muito útil para criar sistemas mais flexíveis e fáceis de manter.
 
 # Padrões Arquiteturais
 No desenvolvimento de backend, vários padrões arquiteturais são utilizados para resolver diferentes desafios e otimizar a construção e manutenção de sistemas complexos. Aqui está uma lista de alguns padrões arquiteturais comuns, o que eles resolvem e quando devemos usá-los:
